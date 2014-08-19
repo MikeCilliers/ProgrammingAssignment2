@@ -1,7 +1,13 @@
 ## developer: Mike Cilliers
 ## date: 19 Aug 2014
-## version: 1
+## version: 1.0
+## Code forked from rdpeng/ProgrammingAssignment2 at Github.com
 ## Coursera R Programming Assignment 2
+
+## Matrix inversion is usually a costly computation and there may be some benefit to caching 
+## the inverse of a matrix rather than computing it repeatedly. 
+## This R file consists of a pair of functions that cache the inverse of a matrix
+## Assume that the matrix supplied is always invertible
 
 
 ## Example of calling the functions below
@@ -14,7 +20,7 @@
 
 
 
-## The following function, makeCachematrix, gets called to create a matrix object
+## This function, makeCachematrix, creates a special "matrix" object that can cache its inverse
 makeCachematrix <- function(x = matrix()) {
 	
         s <- NULL
@@ -30,17 +36,20 @@ makeCachematrix <- function(x = matrix()) {
              getsolve = getsolve)
 }
 
-## The following function, cacheSolve, gets called to return the inverse of matrix object created by makeCachematrix
-## This function calls x$getsolve(), in makeCachematrix, to retrieve the cached inverse of the matrix
-## If x$getsolve() returns null, it then gets the matrix by calling x$get(), calculates the inverse of the matrix by using the solve() function 
-## and then calls x$setsolve to cache the inverse of the matrix
+## This function computes the inverse of the special "matrix" returned by makeCacheMatrix above. 
+## If the inverse has already been calculated (and the matrix has not changed), then cacheSolve 
+## retrieves the inverse from the cache
+
 cacheSolve <- function(x, ...) {
+		## retrieve the inverse of the matrix from the cache, return the inverse if it exists (i.e. not null)
         s <- x$getsolve()
         if(!is.null(s)) {
                 message("getting cached data")
                 return(s)
         }
+		## retrieve the matrix
         data <- x$get()
+		## calculate the inverse of the matric and assign it to the cache
         s <- solve(data, ...)
         x$setsolve(s)
         s
